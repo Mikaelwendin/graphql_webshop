@@ -208,5 +208,25 @@ exports.resolvers = {
         success: true,
       };
     },
+    deleteCart: async (_, args) => {
+      const cartId = args.cartId;
+      const filePath = path.join(cartDirectory, `${cartId}.json`);
+      const cartExists = await fileExists(filePath);
+      if (!cartExists) {
+        return new GraphQLError("That cart does not exist");
+      }
+      try {
+        await deleteFile(filePath);
+      } catch (error) {
+        return {
+          deletedId: cartId,
+          success: false,
+        };
+      }
+      return {
+        deletedId: cartId,
+        success: true,
+      };
+    },
   },
 };
